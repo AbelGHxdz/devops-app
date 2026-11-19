@@ -35,3 +35,12 @@ jobs:
       - run: pip install flake8 mypy
       - run: flake8 src/ --max-line-length=120
       - run: mypy src/ --ignore-missing-imports
+
+  build:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t app:${{ github.sha }} .
+      - run: docker images app
